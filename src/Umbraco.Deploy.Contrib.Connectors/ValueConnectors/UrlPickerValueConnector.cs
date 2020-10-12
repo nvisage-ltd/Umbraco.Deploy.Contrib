@@ -60,6 +60,10 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
             if (string.IsNullOrWhiteSpace(svalue))
                 return string.Empty;
 
+            // Check if value is an array or not; picker values stored in legacy json types (e.g. archetype) may not have been migrated to array yet; convert here on migration.
+            if (svalue.StartsWith("{", StringComparison.Ordinal))
+                svalue = $"[{(object)svalue}]";
+
             IEnumerable<UrlPickerPropertyData> urlPickerPropertyDatas;
 
             // If using an old version of the UrlPicker - data is serialized as a single object
